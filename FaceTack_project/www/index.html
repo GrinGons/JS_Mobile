@@ -1,0 +1,320 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Test FaceTac</title>
+  <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/javascript" src="cordova-1.7.0.js"></script>
+  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDD353fOPh-KBUQ-2ekPCg75uxXRn0D9Tk&sensor=false"></script>
+  
+  <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+  <script type="text/javascript" src="js/jquery.mobile-1.4.5.js"></script>
+  <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="js/exercisetracker.js"></script>
+
+  <link rel="stylesheet" href="css/jquery.mobile.icons-1.4.5.css" />
+  <link rel="stylesheet" href="css/jquery.mobile.icons-1.4.5.min.css" />
+  <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.5.css" />
+  <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.5.min.css" />
+  <link rel="stylesheet" href="css/jquery.mobile.theme-1.4.5.css" />
+  <link rel="stylesheet" href="css/jquery.mobile.theme-1.4.5.min.css" />
+  <link href="https://fonts.googleapis.com/css?family=Quantico" rel="stylesheet">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+
+  <!-- region jQuery Mobile -->
+  <link rel = "stylesheet" href = "https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+  <script src = "https://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src = "https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+  <!-- https://firebase.google.com/docs/web/setup -->
+  <!--Firebase App is always required and must be first -->
+  <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase-database.js"></script>
+  <script type="text/javascript" src="../platforms/browser/www/cordova.js"></script>
+  <script type="text/javascript" src="js/map.js"></script>
+
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.expkey=AIzaSyCMGCTqKhR6rvQHhm9BKsY_ty6mTgfbfvw&callback=initMap&libraries=places" async defer></script>
+
+  <link rel="stylesheet" type="text/css" href="css/index.css" />
+  <link rel="stylesheet" type="text/css" href="css/map.css">
+</head>
+<body>
+<!-- Main Home  ----------------------->
+<div data-role="page" id="plus">
+    <div data-role="header"> 
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#pageTrip" data-transition="none" data-icon="location" onclick="app.initFirebase(); dialog();">Road Trip</a></li>
+          <li><a href="#pageMap" data-transition="none" data-icon="bars" onclick="loadMap();">Map</a></li>
+          <li><a href="#pageContact" data-transition="none" data-icon="plus">Contact</a></li>
+          <li><a href="#pageCamera" data-transition="none" data-icon="star">Camera</a></li>
+          <li><a href="#pageMedia" data-transition="none" data-icon="bars">Media</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div data-role="content">
+      <h1 id="plus_clearstorage_button">FaceTac</h1>
+      <p id="intro">Welcome to the <em>FaceTac</em> app.<br> Click on. You can use <em>play music</em>, <em>cameda</em>, <em>GPS</em>, <em>google map</em>, and more</p>
+    </div>
+
+
+    <div data-role="page" id="startTracking"><!---------------------------------->
+      <div data-role="header">
+        <h1>Track Workout</h1>
+        <div data-role="navbar">
+          <ul>
+            <li><a href="#plus" data-transition="none" data-icon="plus">Plus</a></li>
+            <li><a href="#startTracking" data-transition="none" data-icon="location">Track Workout</a></li>
+            <li><a href="#favorate" data-transition="none" data-icon="star">Favorate</a></li>
+            <li><a href="#history" data-transition="none" data-icon="bars">History</a></li>
+          </ul>
+        </div>
+      </div>
+       
+      <div data-role="content"> <!---------------------------------------->
+        <p id="startTracking_status"></p>
+          <div data-role="fieldcontain" class="ui-hide-label">
+            <label for="track_id">Track ID/Name:</label>
+            <input type="text" name="track_id" id="track_id" placeholder="Workout ID/Name"/>
+          </div>
+          <button data-role="button" id="startTracking_start">Start Tracking</button>
+          <button data-role="button" id="startTracking_stop">Stop Tracking</button>  
+      </div>
+    </div>
+   
+  </div>
+
+
+
+<!-- Road Trip ----------------------->
+<div data-role="page" id="pageTrip">
+  <div data-role="header">
+    <h1><a href="#plus" data-transition="none">FaceTac</a></h1>
+   
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#pageTrip" data-transition="none" data-icon="location" onclick="app.initFirebase(); dialog();">Road Trip</a></li>
+        <li><a href="#pageMap" data-transition="none" data-icon="bars" onclick="loadMap();">Map</a></li>
+        <li><a href="#pageContact" data-transition="none" data-icon="plus">Contact</a></li>
+        <li><a href="#pageCamera" data-transition="none" data-icon="star">Camera</a></li>
+        <li><a href="#pageMedia" data-transition="none" data-icon="bars">Media</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div data-role="main" class="ui-content">
+
+      <h4 id="writeStatusMessage" class="error"></h4>
+      
+      <label for="location">Location:</label>
+      <input type="text" name="name" id="location" value="" data-mini="true" />
+
+      <label for="description">Description:</label>
+      <input type="text" name="name" id="description" value="" data-mini="true" />
+
+      <label for="latitude">Latitude:</label>
+      <input type="text" name="name" id="latitude" value="" data-mini="true" />
+
+      <label for="longitude">Longitude:</label>
+      <input type="text" name="name" id="longitude" value="" data-mini="true" />
+      <button onclick="app.setUserName()">Update</button>
+  </div>
+
+  <div data-role="main" class="ui-content">
+      <h4 id="readStatusMessage" class="error"></h4>
+      <h1>Location History</h1><br>
+
+      <input type="hidden" name="name" id="authUserId" value="" data-mini="true" disabled />
+      <input type="hidden" name="name" id="authEmail" value="" data-mini="true" disabled />
+      <input type="hidden" name="name" id="userIdOn" value="" data-mini="true" disabled />
+
+      <label for="locationOn"><b>Location:</b> <span id="locationOn"></span></label>
+      <label for="descriptionOn"><b>Description:</b> <span id="descriptionOn"></span></label>
+      <label for="latitudeOn"><b>Latitude:</b> <span id="latitudeOn"></span></label>
+      <label for="longitudeOn"><b>Longitude:</b> <span id="longitudeOn"></span></label>
+  </div>
+</div>
+<!-- Road Trip ----------------------->
+
+
+<!-- Map  ----------------------->
+<div data-role="page" id="pageMap">
+  <div data-role="header">
+    <h1><a href="#plus" data-transition="none">FaceTac</a></h1>
+     
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#pageTrip" data-transition="none" data-icon="location" onclick="app.initFirebase(); dialog();">Road Trip</a></li>
+        <li><a href="#pageMap" data-transition="none" data-icon="bars" onclick="loadMap();">Map</a></li>
+        <li><a href="#pageContact" data-transition="none" data-icon="plus">Contact</a></li>
+        <li><a href="#pageCamera" data-transition="none" data-icon="star">Camera</a></li>
+        <li><a href="#pageMedia" data-transition="none" data-icon="bars">Media</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="searchPanel1" data-mini="true">
+    <input type="text" id="search" onFocus="geolocate(id)" size="25" placeholder="From" />
+    <button class="ui-btn ui-corner-all" onclick="searchDestination(search);">Search</button>    
+    <fieldset data-role="controlgroup" >
+    <input type="text" size="25" id="end" onFocus="geolocate(id)" placeholder="To"/>
+      <select name="select-h-1c" id="select-h-1c">
+          <option value="DRIVING">Driving</option>
+          <option value="WALKING">Walking</option>
+          <option value="BICYCLING">Bicycling</option>
+          <option value="TRANSIT">Transit</option>
+      </select>
+    </fieldset>
+
+    <fieldset data-role="controlgroup" >
+    <button class="ui-btn ui-corner-all ui-mini" onclick="calcRoute();">serch route</button>
+    <button class="ui-btn ui-corner-all ui-mini" onclick="clearRoute();">Clear route</button>
+      </fieldset>
+
+  </div>
+  <div id="navPaner"></div>
+  <div id="map"></div>
+</div>
+<!-- Map  ------------------------>
+
+
+<!-- Contact  ----------------------->
+<div data-role="page" id="pageContact">
+  <div data-role="header">
+    <h1><a href="#plus" data-transition="none">FaceTac</a></h1>
+     
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#pageTrip" data-transition="none" data-icon="location" onclick="app.initFirebase(); dialog();">Road Trip</a></li>
+        <li><a href="#pageMap" data-transition="none" data-icon="bars" onclick="loadMap();">Map</a></li>
+        <li><a href="#pageContact" data-transition="none" data-icon="plus">Contact</a></li>
+        <li><a href="#pageCamera" data-transition="none" data-icon="star">Camera</a></li>
+        <li><a href="#pageMedia" data-transition="none" data-icon="bars">Media</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div data-role="content">
+    <div id="deviceready">
+      <p><button id="btnContact">Contacts List</button></p>
+      <p><button id="btnNew">Create a New Contact</button></p>
+      <p><button id="btnFind">Search Contact</button></p>
+    </div>
+    <div id="contactList"></div>
+    <div id="newContact" style="display:none;">
+      <p><input type="text" id="first" value="first name"></p>
+      <p><input type="text" id="last" value="last name"></p>
+      <p><button id="btnSave">Save</button>
+    </div>
+    <div id="searchFrom" style="display:none;">
+      <p><input type="text" id="searchName" placeholder="first name or last name"></p>
+      <p><button id="btnSearch">Find</button></p>
+    </div>
+  </div>
+  
+</div>
+<!-- Contact ----------------------->
+
+
+<!-- Camera ----------------------->
+<div data-role="page" id="pageCamera">
+  <div data-role="header">
+    <h1><a href="#plus" data-transition="none">FaceTac</a></h1>
+     
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#pageTrip" data-transition="none" data-icon="location" onclick="app.initFirebase(); dialog();">Road Trip</a></li>
+        <li><a href="#pageMap" data-transition="none" data-icon="bars" onclick="loadMap();">Map</a></li>
+        <li><a href="#pageContact" data-transition="none" data-icon="plus">Contact</a></li>
+        <li><a href="#pageCamera" data-transition="none" data-icon="star">Camera</a></li>
+        <li><a href="#pageMedia" data-transition="none" data-icon="bars">Media</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin: 5%;">
+    <p>
+      <a id="btnPic" href="#"><img src="img/camera.jpg"></a>&nbsp;
+      <a id="btnClear" href="#" style="margin-right:0.3em;"><img src="img/clear.jpg"></a>
+    </p>
+    <p><img id="photo"></p>
+    <p id="msg"></p>
+  </div>
+  
+</div>
+<!-- Camera  ----------------------->
+
+
+<!-- Media  ----------------------->
+<div data-role="page" id="pageMedia">
+  <div data-role="header">
+    <h1><a href="#plus" data-transition="none">FaceTac</a></h1>
+     
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#pageTrip" data-transition="none" data-icon="location" onclick="app.initFirebase(); dialog();">Road Trip</a></li>
+        <li><a href="#pageMap" data-transition="none" data-icon="bars" onclick="loadMap();">Map</a></li>
+        <li><a href="#pageContact" data-transition="none" data-icon="plus">Contact</a></li>
+        <li><a href="#pageCamera" data-transition="none" data-icon="star">Camera</a></li>
+        <li><a href="#pageMedia" data-transition="none" data-icon="bars">Media</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="app" style="background-color: #efefef">
+        <h1 class="ui-bar-b" style="color:#fcf441;font-size: 3em; text-align: center;border-radius: 10px;border-style: solid; border-color: rgba(255, 112, 48, 0.97);padding: 3%;margin: 5%;">Play the beat!</h1><br>
+        
+        <div class="ui-grid-a" style="font-family: 'Text Me One', sans-serif; margin-left: 3%;">
+            <div class="ui-block-a"><strong>Play the beat! App :</strong> Using Phonegap media API and jQuery mobile</div>
+            <div class="ui-block-b"><strong>Features :</strong> Play, pause, stop, playing time</div>
+        </div><br><br><br><br>
+        
+        <div id="deviceready" class="blink">
+            <p class="event listening">Connecting to Device</p>
+            <p class="event received"></p>
+        </div>
+    </div>
+    
+    <div class="ui-bar-b" style="padding: 2%; text-align: center;">Playing time </div>
+    <div id="audio_position" style="text-align: center;"  ></div><br><br><br>
+    
+    <div class="ui-grid-a">
+      <div class="ui-block-a"><button type="button" data-theme="a" onclick="playAudio();">Play the Beat</button></div>
+      <div class="ui-block-b"><button type="button" data-theme="a" onclick="pauseAudio();">Pause the Beat</button></div><br>
+    </div>
+
+    <div class="ui-grid-solo">
+      <div class="ui-block-a"><button type="button" data-theme="b" onclick="stopAudio();">Stop the Beat</button></div><br>     
+    </div> 
+</div>
+<!-- Media  ----------------------->
+<script>
+    var config = {
+        
+        apiKey: "AIzaSyCQavnKxJ3PBiGRhSdJ_lp43pdRovEEaB8",
+        authDomain: "facetac1812.firebaseapp.com",
+        databaseURL: "https://facetac1812.firebaseio.com",
+        projectId: "facetac1812",
+        storageBucket: "facetac1812.appspot.com",
+        messagingSenderId: "815400183991"
+        /*
+        apiKey: "AIzaSyD6uonrdf1rL8nC3aiRfUa14zUqYra2es8",
+        authDomain: "roadtrip-1d5b1.firebaseapp.com",
+        databaseURL: "https://roadtrip-1d5b1.firebaseio.com",
+        projectId: "roadtrip-1d5b1",
+        storageBucket: "roadtrip-1d5b1.appspot.com",
+        messagingSenderId: "461431680534"
+        */
+    };
+    firebase.initializeApp(config);
+</script>
+<script type="text/javascript" src="../platforms/browser/www/cordova.js"></script>
+<script type="text/javascript" src="js/firebase.js"></script>
+<script type="text/javascript" src="js/map.js"></script>
+<script type="text/javascript" src="js/contact.js"></script>
+<script type="text/javascript" src="js/camera.js"></script>
+<script type="text/javascript" src="js/media.js"></script>
+</body>
+</html>
